@@ -33,11 +33,9 @@ from gcc.tasks import build_model
 
 warnings.filterwarnings("ignore")
 
-
-GRAPH_OUTPUT_PATH = 'gcc/result/'
-
 family_model_name = "./gcc/result/model_family.pickle.dat"
 big_label_model_name = "./gcc/result/model_big_label.pickle.dat"
+
 
 def k_label_to_q_label(label_k, q_to_k_index):
     label_q = []
@@ -83,7 +81,7 @@ class GraphClassification(object):
         for train_index, test_index in kf.split(x, y):
             # x_train, x_test = x[train_index], x[test_index]
             # y_train, y_test = y[train_index], y[test_index]
-            x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
+            x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
             if search:
                 params = {"C": [1, 10, 100, 1000, 10000, 100000]}
                 classifier = GridSearchCV(

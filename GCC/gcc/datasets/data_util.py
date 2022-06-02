@@ -24,8 +24,8 @@ from scipy.sparse import linalg
 from dgl.data.utils import load_graphs
 
 
+# TODO 需要修改过来
 GRAPH_INPUT_PATH = '../mid_data/gcc_input/subgraphs_train_data.bin'
-GRAPH_AUG_INPUT_PATH = '../mid_data/gcc_input/subgraphs_train_aug_data.bin'
 
 
 def batcher():

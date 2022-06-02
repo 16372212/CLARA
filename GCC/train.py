@@ -56,7 +56,7 @@ def parse_option():
     parser.add_argument("--num-workers", type=int, default=0, help="num of workers to use")
     parser.add_argument("--num-copies", type=int, default=2, help="num of dataset copies that fit in memory")
     parser.add_argument("--num-samples", type=int, default=2000, help="num of samples per batch per worker")
-    parser.add_argument("--epochs", type=int, default=10, help="number of training epochs")
+    parser.add_argument("--epochs", type=int, default=6, help="number of training epochs")
 
     # optimization
     parser.add_argument("--optimizer", type=str, default='adam', choices=['sgd', 'adam', 'adagrad'], help="optimizer")
@@ -127,7 +127,7 @@ def parse_option():
     parser.add_argument("--cv", action="store_true")
     # fmt: on
 
-    parser.add_argument("--r", type=float, default=0.15, help="masking value",choices=[0.3, 0.15])
+    parser.add_argument("--r", type=float, default=0.15, help="masking value", choices=[0.3, 0.15, 0.6])
     opt = parser.parse_args()
 
     iterations = opt.lr_decay_epochs.split(",")
