@@ -68,6 +68,7 @@ def main(args_test):
         )
     else:
         print("=> no checkpoint found at '{}'".format(args_test.load_path))
+        return
     args = checkpoint["opt"]
  
     # assert args_test.gpu is None or torch.cuda.is_available()

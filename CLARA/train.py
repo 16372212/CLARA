@@ -139,25 +139,12 @@ def parse_option():
 
 
 def option_update(opt):
-    opt.model_name = "{}_moco_{}_{}_{}_layer_{}_lr_{}_decay_{}_bsz_{}_hid_{}_samples_{}_nce_t_{}_nce_k_{}_rw_hops_{}_restart_prob_{}_aug_{}_ft_{}_deg_{}_pos_{}_momentum_{}_r{}".format(
+    opt.model_name = "{}_{}_layer_{}_bsz_{}_nce_k_{}_momentum_{}_r{}".format(
         opt.exp,
-        opt.moco,
         opt.dataset,
-        opt.model,
         opt.num_layer,
-        opt.learning_rate,
-        opt.weight_decay,
         opt.batch_size,
-        opt.hidden_size,
-        opt.num_samples,
-        opt.nce_t,
         opt.nce_k,
-        opt.rw_hops,
-        opt.restart_prob,
-        opt.aug,
-        opt.finetune,
-        opt.degree_embedding_size,
-        opt.positional_embedding_size,
         opt.alpha,
         opt.r,
     )

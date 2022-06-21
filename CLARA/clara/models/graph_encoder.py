@@ -47,8 +47,8 @@ class GraphEncoder(nn.Module):
         max_node_freq=8,
         max_edge_freq=8,
         max_degree=128,
-        freq_embedding_size=32,
-        degree_embedding_size=32,
+        freq_embedding_size=16,
+        degree_embedding_size=16,
         output_dim=32,
         node_hidden_dim=32,
         edge_hidden_dim=32,
@@ -63,15 +63,16 @@ class GraphEncoder(nn.Module):
     ):
         super(GraphEncoder, self).__init__()
 
+        # 这里如果修改了API的纬度数据，需要也进行相应的修改
         if degree_input:
-            node_input_dim = positional_embedding_size + degree_embedding_size + 2 # 66
+            node_input_dim = positional_embedding_size + degree_embedding_size + 2 - 16  # 66
             print(f'node_input_dim: {node_input_dim}')
         else:
-            node_input_dim = positional_embedding_size + 2
+            node_input_dim = positional_embedding_size + 2 - 16
         # node_input_dim = (
         #     positional_embedding_size + freq_embedding_size + degree_embedding_size + 3
         # )
-        print(f"+++++++++++++++++{node_input_dim}++++++++++++++++++++++++++++")
+        print(f"+++++++++++++++++node_input_dim：{node_input_dim}++++++++++++++++++++++++++++")
         edge_input_dim = freq_embedding_size + 1
         if gnn_model == "mpnn":
             self.gnn = UnsupervisedMPNN(
