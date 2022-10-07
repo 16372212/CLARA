@@ -32,13 +32,13 @@ sys.path.append(root_path)
 GRAPH_OUTPUT_PATH = 'mid_data/graph.pkl'
 NODE_OUTPUT_PATH = 'mid_data/nodes.pkl'
 SAMPLE_LIST_OUTPUT_PATH = 'mid_data/sample_list.pkl'
-API_MATRIX_OUTPUT_PATH = 'mid_data/api_matrix1_3.pkl'
+API_MATRIX_OUTPUT_PATH = 'mid_data/api_matrix.pkl'
 API_INDEX_OUTPUT_PATH = 'mid_data/api_index_map.pkl'
 SAMPLE_NUM_TO_NODE_ID_PATH = 'mid_data/sample_num_to_node_id.pkl'
 
 DGL_OUTPUT_PATH = 'mid_data/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
 
-GRAPH_SUB_AUG_INPUT_PATH = 'mid_data/gcc_input/aug_graphs_10/'  # 构造的正样本的存放路径
+GRAPH_SUB_AUG_INPUT_PATH = 'mid_data/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
 
 # 前置数据（已有，直接读取）
 graph = {}  # 二维矩阵dict{}。从原始数据集通过dfs构造出来的二维matrix
@@ -55,7 +55,7 @@ big_labels = []  # List[family label名称]，二者对应关系
 left_nodes = []  # 构造dgl用到的中间数据。dgl中的边的起始节点
 right_nodes = []  # dgl中的边的终止节点
 
-API_LIST_LEN = 32
+API_LIST_LEN = 16
 td = {'api': 0, 'network': 1, 'reg': 2, 'file': 3, 'process': 4}
 
 with open(GRAPH_OUTPUT_PATH, 'rb') as fr:
@@ -201,7 +201,7 @@ def draw_aug_dgls(huge_graph, sample_id_lists, family_label_lists, big_label_lis
     不加处理会产生OOM，内存超过。一个是运算时间很慢，但更重要的是，数据量太大，将所有的节点变成都统一存储在一起，内存容量会暴增
     解决办法:
         1. 长度为2的节点做一个过滤，判断是否是自己的processTree里的
-        2. 减少api参数长度: 将长度为32，删除多余参数变成长度为12
+        2. 减少api参数长度: 将长度为32，删除多余参数变成长度为16
         3. 将aug的数据放到batch里进行训练
     """
     aug_to_k_index = []
@@ -221,6 +221,7 @@ def draw_aug_dgls(huge_graph, sample_id_lists, family_label_lists, big_label_lis
             num_have_len3node += 1
             len1_node, len2_node, len3_node = dgl.bfs_nodes_generator(huge_graph, sample_id)[:3]
             tuple_temp = (len1_node, len2_node, len3_node)
+            # 这里创造并保存针对每个子图的数据增强图
             an, dn = get_aug_of_graph_list(huge_graph, [], sample_id, len2_node, aug_to_k_index, len(graph_k_list),
                                            len3_node)
             add_edge_num += an
@@ -261,7 +262,7 @@ def get_aug_of_graph_list(huge_graph, aug_list, sample_id, len2_node, aug_to_k_i
     g = huge_graph
     add_edge_num = 0
     del_node_num = 0
-    # api属性遮掩, 遮掩两个
+    # api属性遮掩, 遮掩3个
     tuple_temp = (torch.tensor([sample_id]), len2_node)
     if len3_node is not None:
         tuple_temp = (torch.tensor([sample_id]), len2_node, len3_node)
@@ -269,21 +270,27 @@ def get_aug_of_graph_list(huge_graph, aug_list, sample_id, len2_node, aug_to_k_i
     api_aug_g = g.subgraph(subv)
     api_aug_g.copy_from_parent()
     api_aug_g2 = copy.deepcopy(api_aug_g)
+    api_aug_g3 = copy.deepcopy(api_aug_g)
     mask_k = torch.zeros(len(api_aug_g.ndata['api_pro']), dtype=torch.int64).bernoulli(0.3).reshape(
         (len(api_aug_g.ndata['api_pro']), 1))
     mask_k2 = torch.zeros(len(api_aug_g.ndata['api_pro']), dtype=torch.int64).bernoulli(0.3).reshape(
         (len(api_aug_g.ndata['api_pro']), 1))
+    mask_k3 = torch.zeros(len(api_aug_g.ndata['api_pro']), dtype=torch.int64).bernoulli(0.5).reshape(
+        (len(api_aug_g.ndata['api_pro']), 1))
     api_aug_g.ndata['api_pro'] = api_aug_g.ndata['api_pro'] * mask_k
     api_aug_g2.ndata['api_pro'] = api_aug_g2.ndata['api_pro'] * mask_k2
+    api_aug_g3.ndata['api_pro'] = api_aug_g3.ndata['api_pro'] * mask_k3
     aug_list.append(api_aug_g)
     aug_list.append(api_aug_g2)
+    aug_list.append(api_aug_g3)
+    aug_to_k_index.append(k_list_id)
     aug_to_k_index.append(k_list_id)
     aug_to_k_index.append(k_list_id)
 
     if len3_node is None:
         # 还剩下1类型的没有删除，这里可以随机删除1类型的边
         del_temp_subv = []
-        mask_node_index = torch.zeros(len(subv), dtype=bool).bernoulli(0.15)
+        mask_node_index = torch.zeros(len(subv), dtype=bool).bernoulli(0.20)
 
         # 随机遮掩network类型的节点
         i = 0

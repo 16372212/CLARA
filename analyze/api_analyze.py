@@ -38,6 +38,22 @@ def get_freq_of_api_comb() -> (List[int], List[Dict[str, int]]):
     return api_comb_freq_list, api_freq_of_labels_list
 
 
+def get_api_combines() -> List[List[str]]:
+    api_comb_list: List[List[str]] = [["NtReadFile", "CDocument_Write"],
+                                      ["System", "NtAllocateVirtualMemory"],
+                                      ["Process32FirstW", "Process32Next"],
+                                      ["GetFileType", "GetFileSize", "IdrLoadDll"],
+                                      ["EnumServicesStatusW", "GetSystemTimeAsFileTime"],
+                                      ["SetEndOfFile", "IdrGetDllHandle"],
+                                      ["NtEnumerateKey", "FindResourceExW"],
+                                      ["GetVolumePathNamesForVolumeNameW", "RegQueryValueExW"],
+                                      ["GetCurSorPos", "InternetOpenA", "RegOpenKeyExW"],
+                                      ["EnumWindows", "GetCurSorPos", "GetAddrInfoW"],
+                                      ["GetSystemMetrics", "SendNotifyMessageA"],
+                                      ["RemoveDirectoryW", "OutputDebugStringA", "CouninItialize"]]
+    return api_comb_list
+
+
 def analyze_api_comb_freq(calls: List[str], label: str, api_comb_list: List[List[str]], api_freq_list: List[int],
                           api_freq_of_labels_list: List[Dict[str, int]]):
     index = 0
@@ -54,22 +70,6 @@ def analyze_api_comb_freq(calls: List[str], label: str, api_comb_list: List[List
             else:
                 api_freq_of_labels_list[index][label] += 1
         index += 1
-
-
-def get_api_combines() -> List[List[str]]:
-    api_comb_list: List[List[str]] = [["NtReadFile", "CDocument_Write"],
-                                      ["System", "NtAllocateVirtualMemory"],
-                                      ["Process32FirstW", "Process32Next"],
-                                      ["GetFileType", "GetFileSize", "IdrLoadDll"],
-                                      ["EnumServicesStatusW", "GetSystemTimeAsFileTime"],
-                                      ["SetEndOfFile", "IdrGetDllHandle"],
-                                      ["NtEnumerateKey", "FindResourceExW"],
-                                      ["GetVolumePathNamesForVolumeNameW", "RegQueryValueExW"],
-                                      ["GetCurSorPos", "InternetOpenA", "RegOpenKeyExW"],
-                                      ["EnumWindows", "GetCurSorPos", "GetAddrInfoW"],
-                                      ["GetSystemMetrics", "SendNotifyMessageA"],
-                                      ["RemoveDirectoryW", "OutputDebugStringA", "CouninItialize"]]
-    return api_comb_list
 
 
 def get_api_verb_sum():

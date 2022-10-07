@@ -1,4 +1,4 @@
-# FewM-HGCL
+# CLARA
 
 ## Installation
 
@@ -12,16 +12,9 @@
 
 ## Quick Start
 
-1. build graphs:
-
 ```bash
-python prepare/main.py
-```
-2. train:
-
-```bash
-cd GCC
-sh run.sh 
+cd CLARA
+sh run_loop.sh 
 ```
 
 [comment]: <> (```bash)
@@ -31,29 +24,3 @@ sh run.sh
 [comment]: <> (sh run_loop.sh)
 
 [comment]: <> (```)
-
-## Introduction to project structure
-
-- utl some reusability features
-- test some test demos, to test the linkability of the database, whether the file exists, and a simple example test
-- train
-  - prepare_gcc_data
-  - GCC : gcc as a model for testing
-- data (for the data part of the data, only the input part is temporarily uploaded, and the others need to be declared in gitignore)
-  - input_data: input data
-  - mid_data: data generated in the middle
-  - out_data: output data
-- prepare data preprocessing
-  - read_data read data
-  - draw_graph
-  - build_dgl_from_graph
-  - prepare.py
-- analyze statistical work
-- Materials Paper version of experimental materials
-
-
-[comment]: <> (# Dataset Description)
-
-[comment]: <> (布谷鸟数据集整理后的放在了mongoDB中。)
-
-[comment]: <> (cuckoo_nfs_dX中的数据里，calls这个collection不是和analysis以及其他对应的。)

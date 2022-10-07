@@ -53,7 +53,7 @@ def ana_samples():
             actual_familys[samples.family] = 1
         else:
             actual_familys[samples.family] += 1
-    print(f'actual collected familys this time: {len(actual_familys)}')
+    print(f'actual collected families this time: {len(actual_familys)}')
     print(actual_familys)
 
 
@@ -225,7 +225,7 @@ network_map = {}
 api_map = {}
 
 sample_label = {}  # 用来存储所有的sample对应的list
-MAX_FAMILY_NUM_THREAD = 20
+MAX_FAMILY_NUM_THREAD = 25
 
 
 def create_graph_matrix():
@@ -235,6 +235,7 @@ def create_graph_matrix():
         api_index_matrix = pickle.load(fr)
     labels = get_labels_from_file(LABEL_FILE)
     for database_name in databases_name:
+        print(f'now: len(Nodes)={len(Nodes)}, len(sample)={len(sample_list)}\n')
         collections = client[database_name][collection_name]
         file_collection = client[database_name]['report_id_to_file']  # 获取所有的file, hash映射，可以看作一个dict
         call_collection = client['db_calls'][dbcalls_dict[database_name]]
@@ -313,7 +314,7 @@ def create_graph_matrix():
 
                                 connect(process, filenode)
 
-                                # 4.2 构图 - 注册表
+            # 4.2 构图 - 注册表
             reg_name_list = ['regkey_read', 'regkey_opened']
             if 'behavior' in x and 'generic' in x['behavior']:
                 generics = x['behavior']['generic']
@@ -429,7 +430,7 @@ def create_graph_matrix():
                         netnode = Nodes[network_map[net]]
                     connect(sample, netnode)
 
-                    # 4.6构图 - 获取api节点，直接链接sample
+            # 4.6构图 - 获取api节点，直接链接sample
             call_rows = call_collection.find(filter={'_id': x['_id']})
             calls = {}
 
@@ -506,7 +507,7 @@ def create_graph_matrix():
     print("Write Sample Done")
 
     print('sample num to node id map: ')
-    print(sample_num_to_node_id)
+    # print(sample_num_to_node_id)
 
     # save maps:
     property_maps = {"api": api_map,

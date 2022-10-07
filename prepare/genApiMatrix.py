@@ -83,6 +83,7 @@ def set_argu_dict(argument_dict):
 
 def readApiFromMongo():
     category_set = set()
+    api_category_name_dict = {}
     for database_name in ["cuckoo_nfs_db"]:
         client = pymongo.MongoClient(host=ip, port=port, unicode_decode_error_handler='ignore')
         bad_collections = client[database_name][collection_name]
@@ -109,7 +110,6 @@ def readApiFromMongo():
                 if api_name in api_index_map:
                     continue
 
-                print(call['api'])
                 if api_name == 'NtDeleteFile':
                     print('choose to break')
                     break
@@ -122,6 +122,12 @@ def readApiFromMongo():
                 array_category = set_api_word_dict(call['category'].upper(), CATEGORY_SIZE, api_category_letter_dict,
                                                    api_category_letter)
                 category_set.add(call['category'].upper())
+
+                if call['category'] in api_category_name_dict:
+                    api_category_name_dict[call['category']].add(call['api'])
+                else:
+                    api_category_name_dict[call['category']] = set()
+
                 # 判断一开始是否有HKEY开头
                 # array_arguments = set_argu_dict(call['arguments'])
                 #total_vec = np.hstack((array_name, array_category, array_arguments))
@@ -139,17 +145,14 @@ def readApiFromMongo():
                 #     i = 1
                 # else:
                 #     api_index_map[call['api']].append(total_vec)
+            if len(api_category_name_dict) > 100:
+                break
         print(f"the category of api is more than 341: {len(api_matrix)}")
-        # break
-
-
-
-    with open(OUTPUT_PATH, 'wb') as fr:
-        pickle.dump(api_matrix, fr)
-        pickle.dump(api_index_map, fr)
-
-
-readApiFromMongo()
+        break
+    print(api_category_name_dict)
+    # with open(OUTPUT_PATH, 'wb') as fr:
+    #     pickle.dump(api_matrix, fr)
+    #     pickle.dump(api_index_map, fr)
 
 
 def readApiFromFile():

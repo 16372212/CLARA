@@ -4,6 +4,9 @@ import os
 import sys
 import pickle
 from typing import List
+
+from numpy import sort
+
 from Sample import Node, Sample
 import torch
 import dgl
@@ -14,11 +17,11 @@ import dgl
 GRAPH_OUTPUT_PATH = '../mid_data/graph.pkl'
 NODE_OUTPUT_PATH = '../mid_data/nodes.pkl'
 SAMPLE_LIST_OUTPUT_PATH = '../mid_data/sample_list.pkl'
-API_MATRIX_OUTPUT_PATH = '../mid_data/api_matrix1_3.pkl'
+API_MATRIX_OUTPUT_PATH = '../mid_data/api_matrix.pkl'
 API_INDEX_OUTPUT_PATH = '../mid_data/api_index_map.pkl'
 SAMPLE_NUM_TO_NODE_ID_PATH = '../mid_data/sample_num_to_node_id.pkl'
 DGL_OUTPUT_PATH = '../mid_data/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
-GRAPH_SUB_AUG_INPUT_PATH = '../mid_data/gcc_input/aug_graphs_10/'  # 构造的正样本的存放路径
+GRAPH_SUB_AUG_INPUT_PATH = '../mid_data/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
 
 API_LIST_LEN = 32
 
@@ -73,5 +76,39 @@ def get_dgl_property():
     # dgl_graph.ndata['node_id'] = torch.tensor([*range(0, len(node_type), 1)])
 
 
+def analyze_sample():
+    SAMPLE_LIST_OUTPUT_PATH = '../mid_data/sample_list.pkl'
+
+    with open(SAMPLE_LIST_OUTPUT_PATH, 'rb') as f:
+        sample_list = pickle.load(f)
+
+    print(f'actual sample lists: {len(sample_list)}')
+    actual_familys = {}
+    actual_labels = {}
+    label_familys = {}
+    for samples in sample_list:
+        if samples.label not in actual_labels:
+            actual_labels[samples.label] = 1
+            label_familys[samples.label] = set()
+        else:
+            actual_labels[samples.label] += 1
+
+        if samples.family not in actual_familys:
+            actual_familys[samples.family] = 1
+        else:
+            actual_familys[samples.family] += 1
+
+        label_familys[samples.label].add(samples.family)
+
+    print(sorted(actual_labels.items(), key=lambda kv: (kv[1], kv[0])))
+
+    print(f'actual collected families this time: {len(actual_familys)}')
+    print(actual_familys)
+    print(actual_labels)
+
+    for l in label_familys:
+        print(f'{l}: {len(label_familys[l])}')
+
+
 if __name__ == "__main__":
-    get_dgl_property()
+    analyze_sample()

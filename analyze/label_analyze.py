@@ -40,6 +40,10 @@ def sum_of_labels_and_families(label: Dict[str, Dict[str, str]]):
         print(f'{i}. for label {label}:')
         print(f'there are {len(label_family_dict[label])} families')
         print(label_family_dict[label])
+        temp_fam = ""
+        for family in label_family_dict[label]:
+            temp_fam += family + ", "
+        print(temp_fam)
         print()
         i += 1
 
