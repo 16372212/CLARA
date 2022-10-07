@@ -11,7 +11,6 @@ do
 		  python generate.py --gpu 0 --dataset 'mydataset' --load-path "Pretrain_mydataset_layer_${lnum}_bsz_${bsz}_nce_k_16384_momentum_${alp}_r${r}/current.pth" &&
 	    wait
 	    python clara/tasks/graph_classification.py --dataset "mydataset" --hidden-size 2 --model from_numpy_graph --emb-path "./Pretrain_mydataset_layer_${lnum}_bsz_${bsz}_nce_k_16384_momentum_${alp}_r${r}//mydataset.npy";
-		  echo '3';
 		done
 	done
 done
