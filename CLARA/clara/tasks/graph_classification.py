@@ -1,33 +1,18 @@
 import argparse
-import copy
 import pickle
-import random
-import io
 import warnings
-from collections import defaultdict
 import os, sys
 import time
-
-import networkx as nx
 import numpy as np
-import scipy.sparse as sp
-import torch
-import torch.nn.functional as F
-from scipy import sparse as sp
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV, KFold, StratifiedKFold, train_test_split
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.svm import SVC, LinearSVC
-from sklearn.utils import shuffle as skshuffle
-from tqdm import tqdm
+from sklearn.svm import SVC
+
 
 # 为了让gcc添加到源路径
 warnings.filterwarnings("ignore")
 root_path = os.path.abspath("./")
 sys.path.append(root_path)
-from clara.Sample import Sample, Node
 from clara.datasets.data_util import create_graph_classification_dataset
 from clara.tasks import build_model
 
@@ -122,6 +107,7 @@ class GraphClassification(object):
 #     print("labels形状：", labels.shape)
 #
 #     # 加载构建好的emb模型: emb: dataset['graph_k_lists']到mydataset.npy的过程
+#     # TODO what is build_model
 #     model = build_model(model, hidden_size, **model_args)
 #     embeddings = model.train(None)
 #     print("embeddings元素总数：", embeddings.size)  # 打印数组尺寸，即数组元素总数

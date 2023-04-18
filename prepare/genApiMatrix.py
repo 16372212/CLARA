@@ -100,8 +100,8 @@ def readApiFromMongo():
 
             for call in calls:
 
-                # print(call['category'])
-                # print(call['arguments'])
+                print(call['category'])
+                print(call['arguments'])
 
                 if call is None or 'api' not in call:
                     continue
@@ -156,9 +156,12 @@ def readApiFromMongo():
 
 
 def readApiFromFile():
-    with open(OUTPUT_PATH, 'rb') as fr:
+    TMP_OUTPUT_PATH = "../mid_data/api_matrix.pkl"
+    with open(TMP_OUTPUT_PATH, 'rb') as fr:
         api_matrix = pickle.load(fr)
         api_index_map = pickle.load(fr)
+    print(api_matrix)
+    print(api_index_map)
 
 
 def maskApiMatrix(api_matrix):
@@ -168,3 +171,6 @@ def maskApiMatrix(api_matrix):
     return api_matrix * (1 - randome_mask) + randome_mask_value * randome_mask
 
     # api_mask_matrix = ma.masked_array(api_matrix, mask=randome_mask)
+
+if __name__ == "__main__":
+    readApiFromFile()

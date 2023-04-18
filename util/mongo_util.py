@@ -74,12 +74,15 @@ def connect_demo():
     print(f"collection {coll_name} in connect mongo count : {collection.count()}")
 
 
-def test_connect(host, dbname, coll_name):
+def test_connect():
     port = 27017
+    host = '123.57.156.250'
+    dbname = 'cuckoo_nfs_db'
+    coll_name = 'analysis'
     client = MongoClient(host, port, unicode_decode_error_handler='ignore')
     dblist = client.list_database_names()
     for db in dblist:
         print("database: ", db)
-    database = client[dbname]
-    collection = database[coll_name]
-    print(f"collection {coll_name} in connect mongo count : {collection.count()}")
+    # database = client[dbname]
+    # collection = database[coll_name]
+    # print(f"collection {coll_name} in connect mongo count : {collection.count()}")

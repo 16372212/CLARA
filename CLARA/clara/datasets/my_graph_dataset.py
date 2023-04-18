@@ -327,8 +327,9 @@ if __name__ == "__main__":
         num_workers=num_workers,
     )
     for step, batch in enumerate(graph_loader):
+        print(f'step: {step}, batch: {batch}')
         print(batch.graph_q)
-        # print(batch.graph_q.ndata["api_pro"].shape)
-        print(batch.graph_q.batch_size)
-        # print("max", batch.graph_q.edata["efeat"].max())
+        print(f'batch.graph_q: {batch.graph_q}, batch.graph_q.batch_size: {batch.graph_q.batch_size}')
         break
+
+

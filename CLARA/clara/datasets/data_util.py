@@ -265,7 +265,7 @@ def _rwr_trace_to_dgl_graph(
         subg = g.subgraph(dict(subv_d))
     subg = _add_undirected_graph_positional_embedding(subg, positional_embedding_size) # 增加位置属性？
 
-    subg = _add_undirected_graph_positional_embedding(g, positional_embedding_size) # 增加位置属性？
+    # subg = _add_undirected_graph_positional_embedding(g, positional_embedding_size) # 增加位置属性？
 
     subg.ndata["seed"] = torch.zeros(subg.number_of_nodes(), dtype=torch.long)
     if entire_graph:

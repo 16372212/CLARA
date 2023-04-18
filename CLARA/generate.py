@@ -13,17 +13,10 @@ import dgl
 import numpy as np
 # import tensorboard_logger as tb_logger
 import torch
-from clara.Sample import Sample, Node
-from clara.contrastive.criterions import NCESoftmaxLoss, NCESoftmaxLossNS
-from clara.contrastive.memory_moco import MemoryMoCo
+
 from clara.datasets import (
     GRAPH_CLASSIFICATION_DSETS,
-    GraphClassificationDataset,
-    GraphClassificationDatasetLabeled,
-    LoadBalanceGraphDataset,
     NodeClassificationDataset,
-    NodeClassificationDatasetLabeled,
-    worker_init_fn,
     MyGraphClassificationDataset,
 )
 from clara.datasets.data_util import batcher
