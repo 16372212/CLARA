@@ -12,6 +12,9 @@
 
 ## Quick Start
 
+1. 运行prepare.main方法进行数据准备工作。完成数据读取、异构图构建以及数据增强
+
+2. 运行CLARA代码
 ```bash
 cd CLARA
 sh run_loop.sh 

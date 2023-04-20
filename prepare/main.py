@@ -7,7 +7,7 @@ if __name__ == "__main__":
     """
     0. create api matrix attribute, adjust api attribute length
     """
-    readApiFromMongo()
+    # readApiFromMongo()
 
     """ 
     1. create graph matrix. Read data from mongoDB, use some of them to create

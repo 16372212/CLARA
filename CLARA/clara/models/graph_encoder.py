@@ -14,6 +14,7 @@ from dgl.nn.pytorch import Set2Set
 from clara.models.gat import UnsupervisedGAT
 from clara.models.gin import UnsupervisedGIN
 from clara.models.mpnn import UnsupervisedMPNN
+from clara.models.gcn import UnsupervisedGCN
 
 
 class GraphEncoder(nn.Module):
@@ -94,7 +95,7 @@ class GraphEncoder(nn.Module):
             )
         elif gnn_model == "gin":
             self.gnn = UnsupervisedGIN(
-                num_layers=num_layers, # 
+                num_layers=num_layers,
                 num_mlp_layers=2,
                 input_dim=node_input_dim,
                 hidden_dim=node_hidden_dim,
@@ -104,6 +105,10 @@ class GraphEncoder(nn.Module):
                 graph_pooling_type="sum",
                 neighbor_pooling_type="sum",
                 use_selayer=False,
+            )
+        elif gnn_model == "gcn":
+            self.gnn = UnsupervisedGCN(
+                num_layers=num_layers
             )
         self.gnn_model = gnn_model
 

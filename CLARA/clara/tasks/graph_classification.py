@@ -43,10 +43,10 @@ class GraphClassification(object):
         self.hidden_size = hidden_size
         self.num_shuffle = num_shuffle
         self.seed = seed
-        print(f'self labels')
-        print(self.labels)
-        print(f'self big labels')
-        print(self.big_labels[0:20])
+        # print(f'self labels')
+        # print(self.labels)
+        # print(f'self big labels')
+        # print(self.big_labels[0:20])
 
     def train(self):
         time_start = time.time()
@@ -64,9 +64,9 @@ class GraphClassification(object):
         precision = []
         f1_scores = []
         for train_index, test_index in kf.split(x, y):
-            # x_train, x_test = x[train_index], x[test_index]
-            # y_train, y_test = y[train_index], y[test_index]
-            x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+            x_train, x_test = x[train_index], x[test_index]
+            y_train, y_test = y[train_index], y[test_index]
+            # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
             if search:
                 params = {"C": [1, 10, 100, 1000, 10000, 100000]}
                 classifier = GridSearchCV(
@@ -75,23 +75,24 @@ class GraphClassification(object):
             else:
                 classifier = SVC(C=100000)
             classifier.fit(x_train, y_train)
-            print(f'x shape:{x.shape}\n test_index:{test_index}\n x_test shape:{x_test.shape}')
-            print(f'x shape:{x.shape}\n train_index:{train_index}\n x_train shape:{x_train.shape}')
+            # print(f'x shape:{x.shape}\n test_index:{test_index}\n x_test shape:{x_test.shape}')   # x_test shape:(
+            # 3688, 64), x_train shape:(14749, 64)
+            # print(f'x shape:{x.shape}\n train_index:{train_index}\n x_train shape:{x_train.shape}')
 
             y_pred = classifier.predict(x_test)
             # save the classifier
             pickle.dump(classifier, open(name, "wb"))
-            print('y_pred:')
-            print(y_pred)
-            print('y_test:')
-            print(y_test)
-            print(f'acc: {accuracy_score(y_test, y_pred)}')
+            # print('y_pred:')
+            # print(y_pred)
+            # print('y_test:')
+            # print(y_test)
+            # print(f'acc: {accuracy_score(y_test, y_pred)}')
             recall.append(recall_score(y_test, y_pred, average='weighted'))
             precision.append(precision_score(y_test, y_pred, average='weighted'))
             accuracies.append(accuracy_score(y_test, y_pred))
             f1_scores.append(f1_score(y_test, y_pred, average='weighted'))
-            break
-        print(f'f1-score: {f1_scores}')
+            # break
+        # print(f'f1-score: {f1_scores}')
         print(
             f'Micro-F1: {np.mean(accuracies)},precision:{np.mean(precision)},"recall":{np.mean(recall)},"f1-score":{np.mean(f1_scores)}')
         return {"acc": np.mean(accuracies), "precision": np.mean(precision), "recall": np.mean(recall),
@@ -133,6 +134,7 @@ if __name__ == "__main__":
     parser.add_argument("--num-shuffle", type=int, default=10)
     parser.add_argument("--emb-path", type=str, default="")
     args = parser.parse_args()
+    print("result will write to " + args.emb_path.split('/')[1])
     task = GraphClassification(
         args.dataset,
         args.model,
@@ -144,7 +146,7 @@ if __name__ == "__main__":
     ret = task.train()
     print(ret)
     # write result
-    f1 = open(args.emb_path.split('/')[0] + '/result.txt', 'w')
+    f1 = open(args.emb_path.split('/')[1] + '/result.txt', 'w')
     f1.write(str(ret))
     f1.close()
 

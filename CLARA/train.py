@@ -81,7 +81,7 @@ def parse_option():
     parser.add_argument("--dataset", type=str, default="dgl", choices=["mydataset", "dgl", "wikipedia", "blogcatalog", "usa_airport", "brazil_airport", "europe_airport", "cora", "citeseer", "pubmed", "kdd", "icdm", "sigir", "cikm", "sigmod", "icde", "h-index-rand-1", "h-index-top-1", "h-index"] + GRAPH_CLASSIFICATION_DSETS)
 
     # model definition
-    parser.add_argument("--model", type=str, default="gin", choices=["gat", "mpnn", "gin"])
+    parser.add_argument("--model", type=str, default="gin", choices=["gat", "mpnn", "gin"], help="emb_model")
     # other possible choices: ggnn, mpnn, graphsage ...
     parser.add_argument("--num-layer", type=int, default=5, help="gnn layers")
     parser.add_argument("--readout", type=str, default="avg", choices=["avg", "set2set"])
@@ -139,9 +139,9 @@ def parse_option():
 
 
 def option_update(opt):
-    opt.model_name = "{}_{}_layer_{}_bsz_{}_nce_k_{}_momentum_{}_r{}".format(
+    opt.model_name = "50_{}_{}_layer_{}_bsz_{}_nce_k_{}_momentum_{}_r{}".format(
         opt.exp,
-        opt.dataset,
+        opt.model,
         opt.num_layer,
         opt.batch_size,
         opt.nce_k,
@@ -355,7 +355,7 @@ def train_moco(
     one epoch training for moco
     """
     print(f'========================one epoch===========================')
-    print(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))       # 打印按指定格式排版的时间
+    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))       # 打印按指定格式排版的时间
     n_batch = train_loader.dataset.total // opt.batch_size
     print(f'n_batch is {n_batch}, train_loader.dataset.total:{train_loader.dataset.total}, batch_size:{opt.batch_size}')
     model.train()
@@ -367,7 +367,6 @@ def train_moco(
             m.train()
 
     model_ema.apply(set_bn_train)
-
     batch_time = AverageMeter()
     data_time = AverageMeter()
     loss_meter = AverageMeter()

@@ -225,7 +225,7 @@ network_map = {}
 api_map = {}
 
 sample_label = {}  # 用来存储所有的sample对应的list
-MAX_FAMILY_NUM_THREAD = 25
+MAX_FAMILY_NUM_THREAD = 50
 
 
 def create_graph_matrix():

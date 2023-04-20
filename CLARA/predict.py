@@ -153,7 +153,7 @@ def k_label_to_q_label(label_k, q_to_k_index):
 
 
 class GraphClassification(object):
-    def __init__(self, dataset, model, hidden_size, num_shuffle, seed, **model_args):
+    def __init__(self, dataset, model, hidden_size, num_shuffle, seed, path, **model_args):
         assert model == "from_numpy_graph"
         dataset = create_graph_classification_dataset()
         self.num_nodes = len(dataset['graph_labels'])
@@ -167,21 +167,28 @@ class GraphClassification(object):
         self.num_shuffle = num_shuffle
         self.seed = seed
         self.test_graphs = []
+        self.result_path = path
         print(f'self labels')
         print(self.labels)
         print(f'self big labels')
         print(self.big_labels[0:20])
 
     def predict(self, embeddings):
-        # TODO self.test_graphs转embeddings
-        result = {}
-        result['family_result'] = self.svc_predict(embeddings, family_model_name)
-        result['big_label_result'] = self.svc_predict(embeddings, big_label_model_name)
+        rpath = self.result_path
+        rpath_list = rpath.split(str="/")
+        print(f'result path : {rpath_list}')
+        result = {'family_result': self.svc_predict(embeddings, family_model_name),
+                  'big_label_result': self.svc_predict(embeddings, big_label_model_name)}
+        rpath = self.result_path
+        rpath_list = rpath.split(str="/")
+        f = open("./"+rpath_list[1]+"/result.txt", 'a')
+        f.write(str(result))
         return result
 
     def svc_predict(self, x, model_path):
         loaded_model = pickle.load(open(model_path, "rb"))
         y_pred = loaded_model.predict(x)
+
         print(f'y_pred: {y_pred}')
         return y_pred
 
@@ -200,8 +207,8 @@ def do_predict(emb):
         args.model,
         args.hidden_size,
         args.num_shuffle,
+        args.emb_path,
         args.seed,
-        emb_path=args.emb_path,
     )
     ret = task.predict(emb)
     print(ret)

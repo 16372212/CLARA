@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# File Name: gcn.py
+# File Name: gat.py
 # Author: Jiezhong Qiu
 # Create Time: 2019/12/13 15:38
 # TODO:
