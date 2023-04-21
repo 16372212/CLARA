@@ -9,18 +9,19 @@ from numpy import sort
 import torch
 import dgl
 import requests
+from util.const import MID_DATA_PATH
 
 # root_path = os.path.abspath("./")
 # sys.path.append(root_path)
 
-GRAPH_OUTPUT_PATH = '../mid_data/graph.pkl'
-NODE_OUTPUT_PATH = '../mid_data/nodes.pkl'
-SAMPLE_LIST_OUTPUT_PATH = '../mid_data/sample_list.pkl'
-API_MATRIX_OUTPUT_PATH = '../mid_data/api_matrix.pkl'
-API_INDEX_OUTPUT_PATH = '../mid_data/api_index_map.pkl'
-SAMPLE_NUM_TO_NODE_ID_PATH = '../mid_data/sample_num_to_node_id.pkl'
-DGL_OUTPUT_PATH = '../mid_data/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
-GRAPH_SUB_AUG_INPUT_PATH = '../mid_data/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
+GRAPH_OUTPUT_PATH = f'../{MID_DATA_PATH}/graph.pkl'
+NODE_OUTPUT_PATH = f'../{MID_DATA_PATH}/nodes.pkl'
+SAMPLE_LIST_OUTPUT_PATH = f'../{MID_DATA_PATH}/sample_list.pkl'
+API_MATRIX_OUTPUT_PATH = f'../{MID_DATA_PATH}/api_matrix.pkl'
+API_INDEX_OUTPUT_PATH = f'../{MID_DATA_PATH}/api_index_map.pkl'
+SAMPLE_NUM_TO_NODE_ID_PATH = f'../{MID_DATA_PATH}/sample_num_to_node_id.pkl'
+DGL_OUTPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
+GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
 
 API_LIST_LEN = 32
 
@@ -60,7 +61,7 @@ def get_node():
 
 
 def get_property_maps():
-    with open("../mid_data/property_maps.pkl", "rb") as file:
+    with open(f"../{MID_DATA_PATH}/property_maps.pkl", "rb") as file:
         property_maps = pickle.load(file)
 
     print(api_matrix)

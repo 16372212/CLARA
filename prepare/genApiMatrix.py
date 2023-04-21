@@ -11,8 +11,7 @@ import re
 import numpy as np
 import numpy.ma as ma
 import pickle
-from util.const import databases_name
-
+from util.const import databases_name, MID_DATA_PATH
 api_index_map = {}
 
 api_matrix = []  # {name: , category: , Arguments: (registory)(一个大字符串，开头格式须一致)}
@@ -30,7 +29,7 @@ NAME_SIZE = 10
 CATEGORY_SIZE = 6
 ARGU_SIZE = 20
 
-OUTPUT_PATH = "./mid_data/api_matrix.pkl"
+OUTPUT_PATH = f"./{MID_DATA_PATH}/api_matrix.pkl"
 
 ip = "192.168.105.224"
 port = 27017
@@ -156,7 +155,7 @@ def readApiFromMongo():
 
 
 def readApiFromFile():
-    TMP_OUTPUT_PATH = "../mid_data/api_matrix.pkl"
+    TMP_OUTPUT_PATH = f"../{MID_DATA_PATH}/api_matrix.pkl"
     with open(TMP_OUTPUT_PATH, 'rb') as fr:
         api_matrix = pickle.load(fr)
         api_index_map = pickle.load(fr)

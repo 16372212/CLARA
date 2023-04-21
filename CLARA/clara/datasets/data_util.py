@@ -22,10 +22,11 @@ import torch.nn.functional as F
 from dgl.data.tu import TUDataset
 from scipy.sparse import linalg
 from dgl.data.utils import load_graphs
+from util.const import MID_DATA_PATH
 
 
 # TODO 需要修改过来
-GRAPH_INPUT_PATH = '../mid_data/gcc_input/subgraphs_train_data.bin'
+GRAPH_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/subgraphs_train_data.bin'
 
 
 def batcher():

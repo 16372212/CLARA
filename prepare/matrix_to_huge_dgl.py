@@ -23,22 +23,22 @@ import copy
 from dgl.data.utils import save_graphs
 from dgl.data.utils import load_graphs
 from typing import List
-
+from util.const import MID_DATA_PATH
 from Sample import Node, Sample
 
 root_path = os.path.abspath("./")
 sys.path.append(root_path)
 
-GRAPH_OUTPUT_PATH = 'mid_data/graph.pkl'
-NODE_OUTPUT_PATH = 'mid_data/nodes.pkl'
-SAMPLE_LIST_OUTPUT_PATH = 'mid_data/sample_list.pkl'
-API_MATRIX_OUTPUT_PATH = 'mid_data/api_matrix.pkl'
-API_INDEX_OUTPUT_PATH = 'mid_data/api_index_map.pkl'
-SAMPLE_NUM_TO_NODE_ID_PATH = 'mid_data/sample_num_to_node_id.pkl'
+GRAPH_OUTPUT_PATH = f'{MID_DATA_PATH}/graph.pkl'
+NODE_OUTPUT_PATH = f'{MID_DATA_PATH}/nodes.pkl'
+SAMPLE_LIST_OUTPUT_PATH = f'{MID_DATA_PATH}/sample_list.pkl'
+API_MATRIX_OUTPUT_PATH = f'{MID_DATA_PATH}/api_matrix.pkl'
+API_INDEX_OUTPUT_PATH = f'{MID_DATA_PATH}/api_index_map.pkl'
+SAMPLE_NUM_TO_NODE_ID_PATH = f'{MID_DATA_PATH}/sample_num_to_node_id.pkl'
 
-DGL_OUTPUT_PATH = 'mid_data/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
+DGL_OUTPUT_PATH = f'{MID_DATA_PATH}/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
 
-GRAPH_SUB_AUG_INPUT_PATH = 'mid_data/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
+GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
 
 # 前置数据（已有，直接读取）
 graph = {}  # 二维矩阵dict{}。从原始数据集通过dfs构造出来的二维matrix

@@ -25,8 +25,8 @@ import scipy.sparse as sparse
 from scipy.sparse import linalg
 import sklearn.preprocessing as preprocessing
 import torch.nn.functional as F
-
-GRAPH_SUB_AUG_INPUT_PATH = '../mid_data/gcc_input/aug_graphs_15/aug_'
+from util.const import MID_DATA_PATH
+GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/aug_graphs_15/aug_'
 
 
 def add_undirected_graph_positional_embedding(g, hidden_size, retry=10):

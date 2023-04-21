@@ -14,14 +14,13 @@ from Sample import Node, Sample
 
 root_path = os.path.abspath("./")
 sys.path.append(root_path)
-from util.const import databases_name, dbcalls_dict
-
+from util.const import databases_name, dbcalls_dict, MID_DATA_PATH, MAX_FAMILY_NUM_THREAD
 from analyze.label_analyze import get_labels_from_file
 
-GRAPH_OUTPUT_PATH = 'mid_data/graph.pkl'
-NODE_OUTPUT_PATH = 'mid_data/nodes.pkl'
-SAMPLE_LIST_OUTPUT_PATH = 'mid_data/sample_list.pkl'
-SAMPLE_SAMPLE_NUM_TO_NODE_ID = 'mid_data/sample_num_to_node_id.pkl'
+GRAPH_OUTPUT_PATH = f'{MID_DATA_PATH}/graph.pkl'
+NODE_OUTPUT_PATH = f'{MID_DATA_PATH}/nodes.pkl'
+SAMPLE_LIST_OUTPUT_PATH = f'{MID_DATA_PATH}/sample_list.pkl'
+SAMPLE_SAMPLE_NUM_TO_NODE_ID = f'{MID_DATA_PATH}/sample_num_to_node_id.pkl'
 LABEL_FILE = "label/sample_result.txt"
 
 MAX_API_NUM = 50
@@ -225,16 +224,16 @@ network_map = {}
 api_map = {}
 
 sample_label = {}  # 用来存储所有的sample对应的list
-MAX_FAMILY_NUM_THREAD = 50
 
 
 def create_graph_matrix():
     client = pymongo.MongoClient(host=ip, port=port, unicode_decode_error_handler='ignore')
     # dblist = client.list_database_names()
-    with open('mid_data/api_index_map.pkl', 'rb') as fr:
+    with open(f'{MID_DATA_PATH}/api_index_map.pkl', 'rb') as fr:
         api_index_matrix = pickle.load(fr)
     labels = get_labels_from_file(LABEL_FILE)
     for database_name in databases_name:
+        print(database_name)
         print(f'now: len(Nodes)={len(Nodes)}, len(sample)={len(sample_list)}\n')
         collections = client[database_name][collection_name]
         file_collection = client[database_name]['report_id_to_file']  # 获取所有的file, hash映射，可以看作一个dict
@@ -243,7 +242,6 @@ def create_graph_matrix():
         for x in cursor:
             # 进程list,包括样本
             file_hash = ''
-
             # 1.获取hash
             rows = file_collection.find(filter={'_id': str(x['_id'])})
             for row in rows:
@@ -516,6 +514,6 @@ def create_graph_matrix():
                      "file": file_map,
                      "process": process_map}
 
-    with open("mid_data/property_maps.pkl", "wb") as fr:
+    with open(f"{MID_DATA_PATH}/property_maps.pkl", "wb") as fr:
         pickle.dump(property_maps, fr)
     print("Write property_maps Done")
