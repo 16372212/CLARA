@@ -23,6 +23,6 @@ if __name__ == "__main__":
 
     """
     3. Data augmentation. creating augmented graphs
-        output: gcc_input/aug_graphs_15/  , subgraphs_train_data.bin
+        output: gcc_input/aug_graphs_x/  , subgraphs_train_data.bin
     """
     draw_aug_dgls(huge_graph, sample_id_lists, family_label_lists, big_label_lists)

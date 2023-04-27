@@ -57,7 +57,7 @@ def parse_option():
     parser.add_argument("--num-copies", type=int, default=2, help="num of dataset copies that fit in memory")
     parser.add_argument("--num-samples", type=int, default=2000, help="num of samples per batch per worker")
     parser.add_argument("--epochs", type=int, default=10, help="number of training epochs")
-    parser.add_argument("--my-dataset", type=str, default='25fs', choices=['25fs', '50fs', '25cs', '50cs'], help="my_dataset")
+    parser.add_argument("--my-dataset", type=str, default='20fs', choices=['20fs', '20cs'], help="my_dataset")
 
     # optimization
     parser.add_argument("--optimizer", type=str, default='adam', choices=['sgd', 'adam', 'adagrad'], help="optimizer")
@@ -657,7 +657,7 @@ def main(args):
         criterion = NCESoftmaxLoss() if args.moco else NCESoftmaxLossNS()
         if torch.cuda.is_available():
             criterion = criterion.cuda(args.gpu)
-    
+
     if torch.cuda.is_available():
         model = model.cuda(args.gpu)
         model_ema = model_ema.cuda(args.gpu)

@@ -1,8 +1,8 @@
-#python train.py --dataset 'mydataset' --exp Pretrain --gpu 0 --moco --nce-k 16384 --batch-size 32 --alpha 0.999;
+python train.py --dataset 'mydataset' --exp Pretrain --gpu 0 --moco --nce-k 16384 --batch-size 64 --alpha 0.999;
 
 wait
 
-#python generate.py --gpu 0 --dataset 'mydataset' --load-path './50_Pretrain_gin_layer_5_bsz_32_nce_k_16384_momentum_0.999_r0.15/current.pth';
+python generate.py --gpu 0 --dataset 'mydataset' --load-path './50_Pretrain_gin_layer_5_bsz_32_nce_k_16384_momentum_0.999_r0.15/current.pth';
 
 wait
 

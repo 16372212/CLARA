@@ -21,7 +21,7 @@ API_MATRIX_OUTPUT_PATH = f'../{MID_DATA_PATH}/api_matrix.pkl'
 API_INDEX_OUTPUT_PATH = f'../{MID_DATA_PATH}/api_index_map.pkl'
 SAMPLE_NUM_TO_NODE_ID_PATH = f'../{MID_DATA_PATH}/sample_num_to_node_id.pkl'
 DGL_OUTPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
-GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
+GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/aug_graphs_n/'  # 构造的正样本的存放路径
 
 API_LIST_LEN = 32
 
@@ -133,6 +133,7 @@ def client_backend_create_category():
             print(
                 f'status code: {r.status_code}, \n {str(r.content, encoding="utf-8")}')
 
+
 def analyze_sample():
     with open(SAMPLE_LIST_OUTPUT_PATH, 'rb') as f:
         sample_list = pickle.load(f)
@@ -145,6 +146,7 @@ def analyze_sample():
         if samples.label not in actual_labels:
             actual_labels[samples.label] = 1
             label_familys[samples.label] = set()
+
         else:
             actual_labels[samples.label] += 1
 
@@ -164,9 +166,12 @@ def analyze_sample():
     print(actual_labels)
 
     # data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    total_family_num = 0
     for l in label_familys:
         print(f'family: {l}, {len(label_familys[l])}, label: {label_familys[l]}')
 #        print(f'{l}: {len(label_familys[l])}')
+        total_family_num += len(label_familys[l])
+    print(f'family total {total_family_num}')
 
 
 if __name__ == "__main__":

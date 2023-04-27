@@ -39,9 +39,8 @@ for name in keys:
 	doc2[name] = tmp
 
 
-	# print(results)
-f = open("result_all_2.txt",'w+')
-json.dump(doc2,f)
+f = open("result_all_2.txt", 'w+')
+json.dump(doc2, f)
 #	break
 
 

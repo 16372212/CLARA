@@ -14,7 +14,7 @@ from Sample import Node, Sample
 
 root_path = os.path.abspath("./")
 sys.path.append(root_path)
-from util.const import databases_name, dbcalls_dict, MID_DATA_PATH, MAX_FAMILY_NUM_THREAD
+from util.const import databases_name, dbcalls_dict, MID_DATA_PATH, MAX_FAMILY_NUM_THREAD, less_20_families
 from analyze.label_analyze import get_labels_from_file
 
 GRAPH_OUTPUT_PATH = f'{MID_DATA_PATH}/graph.pkl'
@@ -247,6 +247,10 @@ def create_graph_matrix():
             for row in rows:
                 file_hash = row['file_hash']
             if file_hash not in labels:
+                continue
+
+            # 判断这个家族是否总数<20
+            if labels[file_hash]['family'] in less_20_families:
                 continue
 
             # ********************

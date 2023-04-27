@@ -27,3 +27,12 @@ sh run_loop.sh
 [comment]: <> (sh run_loop.sh)
 
 [comment]: <> (```)
+
+
+```bash
+# 常用指令：
+ssh -l zhenzy 192.168.5.201
+
+scp -r README.md zhenzy@192.168.5.201:/home/LAB/zhenzy
+```
+

@@ -36,9 +36,14 @@ API_MATRIX_OUTPUT_PATH = f'{MID_DATA_PATH}/api_matrix.pkl'
 API_INDEX_OUTPUT_PATH = f'{MID_DATA_PATH}/api_index_map.pkl'
 SAMPLE_NUM_TO_NODE_ID_PATH = f'{MID_DATA_PATH}/sample_num_to_node_id.pkl'
 
-DGL_OUTPUT_PATH = f'{MID_DATA_PATH}/gcc_input/subgraphs_train_data.bin'  # 构造的dgl
+DGL_OUTPUT_PATH = f'{MID_DATA_PATH}/gcc_input/subgraphs_train_data_rm5.bin'  # 构造的dgl
 
-GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
+# GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_15/'  # 构造的正样本的存放路径
+# GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_0/'  # 构造的正样本的存放路径
+GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_n/'  # 构造的正样本的存放路径
+# GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_en/'  # 构造的正样本的存放路径
+# GRAPH_SUB_AUG_INPUT_PATH = f'{MID_DATA_PATH}/gcc_input/aug_graphs_rm5/'  # 构造的正样本的存放路径
+
 
 # 前置数据（已有，直接读取）
 graph = {}  # 二维矩阵dict{}。从原始数据集通过dfs构造出来的二维matrix
@@ -56,7 +61,9 @@ left_nodes = []  # 构造dgl用到的中间数据。dgl中的边的起始节点
 right_nodes = []  # dgl中的边的终止节点
 
 API_LIST_LEN = 16
+
 td = {'api': 0, 'network': 1, 'reg': 2, 'file': 3, 'process': 4}
+
 
 with open(GRAPH_OUTPUT_PATH, 'rb') as fr:
     graph = pickle.load(fr)
@@ -280,18 +287,17 @@ def get_aug_of_graph_list(huge_graph, aug_list, sample_id, len2_node, aug_to_k_i
     api_aug_g.ndata['api_pro'] = api_aug_g.ndata['api_pro'] * mask_k
     api_aug_g2.ndata['api_pro'] = api_aug_g2.ndata['api_pro'] * mask_k2
     api_aug_g3.ndata['api_pro'] = api_aug_g3.ndata['api_pro'] * mask_k3
-    aug_list.append(api_aug_g)
-    aug_list.append(api_aug_g2)
-    aug_list.append(api_aug_g3)
-    aug_to_k_index.append(k_list_id)
-    aug_to_k_index.append(k_list_id)
-    aug_to_k_index.append(k_list_id)
+    # aug_list.append(api_aug_g)
+    # aug_list.append(api_aug_g2)
+    # aug_list.append(api_aug_g3)
+    # aug_to_k_index.append(k_list_id)
+    # aug_to_k_index.append(k_list_id)
+    # aug_to_k_index.append(k_list_id)
 
     if len3_node is None:
         # 还剩下1类型的没有删除，这里可以随机删除1类型的边
         del_temp_subv = []
         mask_node_index = torch.zeros(len(subv), dtype=bool).bernoulli(0.20)
-
         # 随机遮掩network类型的节点
         i = 0
         for tnode in subv:
@@ -301,6 +307,7 @@ def get_aug_of_graph_list(huge_graph, aug_list, sample_id, len2_node, aug_to_k_i
         temp_subgraph = g.subgraph(del_temp_subv)
         temp_subgraph.copy_from_parent()
         aug_list.append(temp_subgraph)
+
         aug_to_k_index.append(k_list_id)
         del_node_num += 1
         # save
@@ -311,7 +318,18 @@ def get_aug_of_graph_list(huge_graph, aug_list, sample_id, len2_node, aug_to_k_i
         return add_edge_num, del_node_num
 
     # 边的增强：因为只有两种类型的边：reg-process, file-process
+    # td = {'api': 0, 'network': 1, 'reg': 2, 'file': 3, 'process': 4}
     remove_td = [[2], [3], [4], [2, 4], [3, 4], [2, 3]]
+
+    # remove_td = [[2], [3], [4], [2, 4], [3, 4]]
+
+    # remove_td = [[2], [3], [4], [2, 4]]
+    #
+    # remove_td = [[2], [3], [4]]
+    #
+    # remove_td = [[2], [3]]
+    #
+    # remove_td = [[2]]
 
     for delete_type_list in remove_td:
         del_temp_subv = copy.deepcopy(subv)  # 用来删除节点的
@@ -342,13 +360,15 @@ def get_aug_of_graph_list(huge_graph, aug_list, sample_id, len2_node, aug_to_k_i
             # print(f'node remove: {len(api_aug_g.nodes)} : {len(temp_subgraph.nodes)} / del_num={del_num}, subv:{len(subv)}, del_subv:{len(del_temp_subv)}')
             aug_to_k_index.append(k_list_id)
             del_node_num += 1
-        if add_num != 0:
-            temp_add_subgraph = temp_g.subgraph(subv)
-            temp_add_subgraph.copy_from_parent()
-            aug_list.append(temp_add_subgraph)
-            # print(f'边的增加: {len(api_aug_g.edges)} : {len(temp_add_subgraph.edges)} / del_num={add_num} , g的边:{len(g.edges)}, temp_g的边:{len(temp_g.edges)}')
-            aug_to_k_index.append(k_list_id)
-            add_edge_num += 1
+
+        # # edge
+        # if add_num != 0:
+        #     temp_add_subgraph = temp_g.subgraph(subv)
+        #     temp_add_subgraph.copy_from_parent()
+        #     aug_list.append(temp_add_subgraph)
+        #     # print(f'边的增加: {len(api_aug_g.edges)} : {len(temp_add_subgraph.edges)} / del_num={add_num} , g的边:{len(g.edges)}, temp_g的边:{len(temp_g.edges)}')
+        #     aug_to_k_index.append(k_list_id)
+        #     add_edge_num += 1
     # save
     save_graphs(GRAPH_SUB_AUG_INPUT_PATH + 'aug_' + str(k_list_id) + '.bin', aug_list)
     return add_edge_num, del_node_num

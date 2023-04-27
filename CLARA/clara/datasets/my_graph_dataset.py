@@ -25,8 +25,10 @@ import scipy.sparse as sparse
 from scipy.sparse import linalg
 import sklearn.preprocessing as preprocessing
 import torch.nn.functional as F
-from util.const import MID_DATA_PATH
-GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/aug_graphs_15/aug_'
+# from util.const import MID_DATA_PATH
+MID_DATA_PATH = "mid_data_20fs_FS"
+AUG_GRAPH_TOTAL = "aug_graphs_rm5"
+GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/{AUG_GRAPH_TOTAL}/aug_'
 
 
 def add_undirected_graph_positional_embedding(g, hidden_size, retry=10):
@@ -218,13 +220,10 @@ class MyGraphClassificationDataset(NodeClassificationDataset):
         q_idx = int(idx - self.dataset['k_qnum'][k_idx])
         model_path = GRAPH_SUB_AUG_INPUT_PATH + str(k_idx) + '.bin'
         graph_q_set = load_graphs(model_path)[0]
-
+        # print(f'--------------------{idx} :/ {k_idx}-:{q_idx}--------------------------')
         graph_k = self.k_graphs[k_idx]
         graph_q = graph_q_set[q_idx]
-        # print(f'--------------------{idx} :/ {k_idx}---------------------------')
-        # return graph_q, graph_kd
-        # gq = add_undirected_graph_positional_embedding(graph_q, self.positional_embedding_size)
-        # gk = add_undirected_graph_positional_embedding(graph_k, self.positional_embedding_size)
+
         return graph_k, graph_q
 
 
