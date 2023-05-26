@@ -61,7 +61,7 @@ def parse_option():
 
     # optimization
     parser.add_argument("--optimizer", type=str, default='adam', choices=['sgd', 'adam', 'adagrad'], help="optimizer")
-    parser.add_argument("--learning_rate", type=float, default=0.005, help="learning rate")
+    parser.add_argument("--learning_rate", type=float, default=0.05, help="learning rate")
     parser.add_argument("--lr_decay_epochs", type=str, default="120,160,200", help="where to decay lr, can be a list")
     parser.add_argument("--lr_decay_rate", type=float, default=0.0, help="decay rate for learning rate")
     parser.add_argument("--beta1", type=float, default=0.9, help="beta1 for adam")
@@ -82,7 +82,7 @@ def parse_option():
     parser.add_argument("--dataset", type=str, default="dgl", choices=["mydataset", "dgl", "wikipedia", "blogcatalog", "usa_airport", "brazil_airport", "europe_airport", "cora", "citeseer", "pubmed", "kdd", "icdm", "sigir", "cikm", "sigmod", "icde", "h-index-rand-1", "h-index-top-1", "h-index"] + GRAPH_CLASSIFICATION_DSETS)
 
     # model definition
-    parser.add_argument("--model", type=str, default="gin", choices=["gat", "mpnn", "gin"], help="emb_model")
+    parser.add_argument("--model", type=str, default="gin", choices=["gat", "mpnn", "gin", "gcn"], help="emb_model")
     # other possible choices: ggnn, mpnn, graphsage ...
     parser.add_argument("--num-layer", type=int, default=5, help="gnn layers")
     parser.add_argument("--readout", type=str, default="avg", choices=["avg", "set2set"])

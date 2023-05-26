@@ -25,7 +25,7 @@ from dgl.data.utils import load_graphs
 
 MID_DATA_PATH = "mid_data_20fs_FS"
 # TODO 需要修改过来
-GRAPH_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/subgraphs_train_data_rm5.bin'
+GRAPH_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/subgraphs_train_data_ena.bin'
 
 
 def batcher():

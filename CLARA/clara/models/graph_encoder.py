@@ -107,9 +107,7 @@ class GraphEncoder(nn.Module):
                 use_selayer=False,
             )
         elif gnn_model == "gcn":
-            self.gnn = UnsupervisedGCN(
-                num_layers=num_layers
-            )
+            self.gnn = UnsupervisedGCN()
         self.gnn_model = gnn_model
 
         self.max_node_freq = max_node_freq

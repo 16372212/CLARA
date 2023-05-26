@@ -18,7 +18,7 @@ class UnsupervisedGCN(nn.Module):
     def __init__(
         self,
         hidden_size=64,
-        num_layer=2,
+        num_layer=3,
         readout="avg",
         layernorm: bool = False,
         set2set_lstm_layer: int = 3,

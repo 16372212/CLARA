@@ -4,9 +4,24 @@ import warnings
 import os, sys
 import time
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+import pandas as pd
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV, KFold, StratifiedKFold, train_test_split
 from sklearn.svm import SVC
+from sklearn.cluster import KMeans
+from sklearn.metrics.cluster import adjusted_rand_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.svm import OneClassSVM
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelBinarizer
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import roc_curve, auc
+from sklearn.preprocessing import label_binarize
+from sklearn.multiclass import OneVsRestClassifier
 
 
 # 为了让gcc添加到源路径
@@ -48,14 +63,52 @@ class GraphClassification(object):
         # print(f'self big labels')
         # print(self.big_labels[0:20])
 
+    def get_emb(self):
+        time_start = time.time()
+        embeddings = self.model.train(None)
+        return embeddings
+
     def train(self):
         time_start = time.time()
         embeddings = self.model.train(None)
         time_end = time.time()
         print('get embeddings cost', time_end - time_start, 's')
         result = {'family_result': self.svc_classify(embeddings, self.labels, family_model_name, False),
-                  'big_label_result': self.svc_classify(embeddings, self.big_labels, big_label_model_name, False)}
+                  }
         return result
+
+
+    def zsl_classify_novel(self, x, y, name, meta_embeddings_all):
+        """测试集中的类没有在训练集中出现"""
+        unique_labels = np.unique(y)
+        accuracies = []
+        recall = []
+        precision = []
+        f1_scores = []
+        np.random.shuffle(unique_labels)
+        num_train_labels = int(len(unique_labels) * 0.8)
+        train_labels = unique_labels[:num_train_labels]
+        test_labels = unique_labels[num_train_labels:]
+
+        train_indices = [i for i, label in enumerate(y) if label in train_labels]
+        test_indices = [i for i, label in enumerate(y) if label in test_labels]
+
+        x_train, y_train = x[train_indices], y[train_indices]
+        x_test, y_test = x[test_indices], y[test_indices]
+
+        n_clusters = len(np.unique(y_train))
+        classifier = KMeans(n_clusters=n_clusters, random_state=0).fit(x_train)
+        y_pred = classifier.predict(x_test)
+
+        # Note: accuracy_score, recall_score, precision_score, f1_score
+        # might not be meaningful for unsupervised methods like KMeans.
+        # I suggest to use adjusted_rand_score or other metrics designed for unsupervised learning
+        ari = adjusted_rand_score(y_test, y_pred)
+        accuracies.append(ari)
+
+        print(f'Adjusted Rand index: {np.mean(accuracies)}')
+        return {"ARI": np.mean(accuracies)}
+
 
     def svc_classify(self, x, y, name, search):
         kf = StratifiedKFold(n_splits=10, shuffle=True, random_state=self.seed)
@@ -75,18 +128,11 @@ class GraphClassification(object):
             else:
                 classifier = SVC(C=100000)
             classifier.fit(x_train, y_train)
-            # print(f'x shape:{x.shape}\n test_index:{test_index}\n x_test shape:{x_test.shape}')   # x_test shape:(
-            # 3688, 64), x_train shape:(14749, 64)
-            # print(f'x shape:{x.shape}\n train_index:{train_index}\n x_train shape:{x_train.shape}')
 
             y_pred = classifier.predict(x_test)
             # save the classifier
             pickle.dump(classifier, open(name, "wb"))
-            # print('y_pred:')
-            # print(y_pred)
-            # print('y_test:')
-            # print(y_test)
-            # print(f'acc: {accuracy_score(y_test, y_pred)}')
+
             recall.append(recall_score(y_test, y_pred, average='weighted'))
             precision.append(precision_score(y_test, y_pred, average='weighted'))
             accuracies.append(accuracy_score(y_test, y_pred))
@@ -94,34 +140,13 @@ class GraphClassification(object):
             # break
         # print(f'f1-score: {f1_scores}')
         print(
-            f'Micro-F1: {np.mean(accuracies)},precision:{np.mean(precision)},"recall":{np.mean(recall)},"f1-score":{np.mean(f1_scores)}')
+            f'acc: {np.mean(accuracies)},precision:{np.mean(precision)},"recall":{np.mean(recall)},"f1-score":{np.mean(f1_scores)}')
+
+        # with open(name, 'wb') as fr:
+        #     pickle.dump(conf_mat, fr)
+
         return {"acc": np.mean(accuracies), "precision": np.mean(precision), "recall": np.mean(recall),
                 "f1-score": np.mean(f1_scores)}
-
-
-# def get_test_data(model, hidden_size, num_shuffle, seed, **model_args):
-#     dataset = create_graph_classification_dataset()
-#     label_list = k_label_to_q_label(dataset['graph_labels'], dataset['q_to_k_index'])
-#     print(f'label_list:{len(label_list)}')
-#     labels = np.array(label_list)
-#     print(f'labels:{labels}')
-#     print("labels形状：", labels.shape)
-#
-#     # 加载构建好的emb模型: emb: dataset['graph_k_lists']到mydataset.npy的过程
-#     # TODO what is build_model
-#     model = build_model(model, hidden_size, **model_args)
-#     embeddings = model.train(None)
-#     print("embeddings元素总数：", embeddings.size)  # 打印数组尺寸，即数组元素总数
-#     print("embeddings形状：", embeddings.shape)  # (20197, 64)
-#     print("embeddings[:2]形状：", embeddings[:2].shape)
-#     print("embeddings[:1]形状：", embeddings[:1].shape)
-#
-#     test_predict(embeddings[:1], labels[:1])
-#
-# def test_predict(X_test, y_test):
-#     loaded_model = pickle.load(open(family_model_name, "rb"))
-#     y_pred = loaded_model.predict(X_test)
-#     print(f'y_pred: {y_pred}, actual value:{y_test}')
 
 
 if __name__ == "__main__":
@@ -150,4 +175,8 @@ if __name__ == "__main__":
     f1.write(str(ret))
     f1.close()
 
-    # get_test_data(args.model, args.hidden_size, args.num_shuffle, args.seed, emb_path=args.emb_path)
+    # with open('./label_matrix', 'rb') as fr:
+    #     conf_mat = pickle.load(fr)
+    # print(conf_mat)
+    # conf_mat = np.array(conf_mat, dtype=int)
+    #

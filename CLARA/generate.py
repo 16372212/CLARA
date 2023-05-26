@@ -35,11 +35,6 @@ def test_moco(train_loader, model, opt):
     for idx, batch in enumerate(train_loader):
         graph_q, graph_k = batch
         bsz = graph_q.batch_size
-        # graph_q.to(opt.device)
-        # graph_k.to(opt.device)
-
-        # graph_q.to(torch.device("cpu") if torch.cuda.is_available() is None else opt.device) # used to be "opt.device"
-        # graph_k.to(torch.device("cpu") if torch.cuda.is_available() is None else opt.device)
 
         with torch.no_grad():
             feat_q = model(graph_q)
@@ -85,7 +80,7 @@ def main(args_test):
             restart_prob=args.restart_prob,
             positional_embedding_size=args.positional_embedding_size,
         )
-    args.batch_size = len(train_dataset)
+    args.batch_size = 32 #len(train_dataset)
     train_loader = torch.utils.data.DataLoader(
         dataset=train_dataset,
         batch_size=args.batch_size,

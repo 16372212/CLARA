@@ -26,9 +26,13 @@ from scipy.sparse import linalg
 import sklearn.preprocessing as preprocessing
 import torch.nn.functional as F
 # from util.const import MID_DATA_PATH
+
 MID_DATA_PATH = "mid_data_20fs_FS"
-AUG_GRAPH_TOTAL = "aug_graphs_rm5"
-GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/{AUG_GRAPH_TOTAL}/aug_'
+AUG_GRAPH = "aug_graphs_ena"
+# TODO 需要修改过来
+GRAPH_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/subgraphs_train_data_10.bin'
+
+GRAPH_SUB_AUG_INPUT_PATH = f'../{MID_DATA_PATH}/gcc_input/{AUG_GRAPH}/aug_'
 
 
 def add_undirected_graph_positional_embedding(g, hidden_size, retry=10):
@@ -262,13 +266,6 @@ class MyGraphClassificationDatasetForOnlyOrigin(MyGraphClassificationDataset):
             other_node_idx = dgl.contrib.sampling.random_walk(
                 g=self.k_graphs[idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
-
-        # traces = dgl.contrib.sampling.random_walk_with_restart(
-        #     self.k_graphs[idx],
-        #     seeds=[node_idx, other_node_idx],
-        #     restart_prob=self.restart_prob,
-        #     max_nodes_per_seed=max_nodes_per_seed,
-        # )
 
         graph_q = data_util._my_aug_for_dgl(
             g=self.k_graphs[idx],
